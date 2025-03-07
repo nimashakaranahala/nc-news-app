@@ -112,30 +112,38 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
         const insertArticlesQuery = format(
           `
         INSERT INTO articles (title, topic, author, body, created_at, votes, article_img_url)
-        VALUES %L;
+        VALUES %L RETURNING *;
       `,
           formattedArticles
         );
         return db.query(insertArticlesQuery);
       })
 
-      // .then(() => {
-      //   const formattedComments = commentData.map(
-      //     ({ article_id, body, created_at, votes = 0, author }) => {
-      //       const { created_at: formattedCreatedAt } = convertTimestampToDate({
-      //         created_at,
-      //       });
-      //       return [article_id, body, votes, author, formattedCreatedAt];
-      //     }
-      //   );
+      .then(({rows}) => {
+        console.log(rows, "<<<<<Rows");
+        const articleIdLookup = {};
+        rows.forEach((articleRow) => {
+          articleIdLookup[articleRow.title] = articleRow.article_id;
+        });
 
-      //   const insertCommentsQuery = format(
-      //     `INSERT INTO comments (article_id, body, votes, author, created_at) VALUES %L;`,
-      //     formattedComments
-      //   );
+        const formattedComments = commentData.map(({ article_title, body, votes = 0, author, created_at }) => {
+            return [
+              articleIdLookup[article_title],
+              body,
+              votes,
+              author,
+              new Date(created_at)
 
-      //   return db.query(insertCommentsQuery);
-      // })
+            ];
+          }
+        );
+
+        const insertCommentsQuery = format(
+          `INSERT INTO comments (article_id, body, votes, author, created_at) VALUES %L RETURNING *;`,
+          formattedComments
+        );
+        return db.query(insertCommentsQuery);
+      })
   );
 };
 
