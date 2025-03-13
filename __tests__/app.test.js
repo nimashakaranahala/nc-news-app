@@ -16,12 +16,35 @@ afterAll(()=>{
 })
 
 describe("GET /api", () => {
-  test.skip("200: Responds with an object detailing the documentation for each endpoint", () => {
+  test("200: Responds with an object detailing the documentation for each endpoint", () => {
     return request(app)
       .get("/api")
       .expect(200)
       .then(({ body: { endpoints } }) => {
         expect(endpoints).toEqual(endpointsJson);
+      });
+  });
+});
+
+describe("GET /api/topics", () => {
+  test("200: responds with and array of correctly formatted topics objects", () => {
+    return request(app)
+      .get("/api/topics")
+      .expect(200)
+      .then(({ body}) => {
+        expect(body.topics.length).toBe(3);
+        body.topics.forEach((topics)=>{
+          expect(typeof topics.slug).toBe("string")
+          expect(typeof topics.description).toBe("string")
+        })
+      });
+  });
+  test("404: responds with an error message for a non-existing endpoint", () => {
+    return request(app)
+      .get("/api/yyyyy")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid path");
       });
   });
 });
