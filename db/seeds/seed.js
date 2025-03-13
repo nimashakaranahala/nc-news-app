@@ -120,7 +120,7 @@ const seed = ({ topicData, userData, articleData, commentData }) => {
       })
 
       .then(({rows}) => {
-        console.log(rows, "<<<<<Rows");
+      
         const articleIdLookup = {};
         rows.forEach((articleRow) => {
           articleIdLookup[articleRow.title] = articleRow.article_id;
