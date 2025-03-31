@@ -5,6 +5,9 @@ const getTopics = require('./controllers/topics.controllers');
 const handleNonExistantEndpoint = require("./controllers/errors.controllers");
 const articles = require("./db/data/test-data/articles");
 const getArticlesById = require('./controllers/articles.controller')
+const cors = require('cors');
+
+app.use(cors());
 
 app.use(express.json());
 
