@@ -4,8 +4,7 @@ const getEndPoints = require("./controllers/api.controllers");
 const getTopics = require('./controllers/topics.controllers');
 const handleNonExistantEndpoint = require("./controllers/errors.controllers");
 const articles = require("./db/data/test-data/articles");
-const getArticlesById = require('./controllers/articles.controller')
-const getArticles = require('./controllers/articles.controller');
+const { getArticlesById, getArticles } = require('./controllers/articles.controller');
 const cors = require('cors');
 
 app.use(cors());
